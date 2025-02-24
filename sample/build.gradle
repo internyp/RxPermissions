@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.tbruyelle.rxpermissions.sample"
+        minSdkVersion 28
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        namespace 'com.github.tbruyelle.rxpermissions'
+    }
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+}
+
+dependencies {
+    implementation project(':rxpermissions')
+
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.2.0'
+    implementation rootProject.ext.androidXAppcompat
+
+    testImplementation 'junit:junit:4.13'
+    testImplementation rootProject.ext.mockito
+}

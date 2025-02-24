@@ -1,0 +1,70 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+apply from: 'jitpack.gradle'
+
+android {
+    compileSdkVersion 34
+    namespace 'com.github.tbruyelle.rxpermissions2'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    defaultConfig {
+        minSdkVersion 28
+        targetSdkVersion 34
+    }
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    testOptions.unitTests.includeAndroidResources = true
+    testOptions.unitTests.all {
+        // unitTests.returnDefaultValues = true
+        // Always show the result of every unit test, even if it passes.
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        }
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.rxJava
+    implementation rootProject.ext.androidXFragment
+    implementation rootProject.ext.androidXAnnotation
+    implementation rootProject.ext.androidXAppcompat
+
+    testImplementation 'junit:junit:4.13'
+    testImplementation rootProject.ext.mockito
+    testImplementation rootProject.ext.robolectric
+    testImplementation rootProject.ext.khronosOpenGLApi
+}
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId = 'com.github.tbruyelle'
+            artifactId = 'rxpermissions'
+            version = '1.0'
+
+            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+        }
+    }
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+tasks.named('publishAarPublicationToMavenLocal').configure {
+    dependsOn tasks.named('bundleReleaseAar')
+}
+// Commented to use JitPack instead of bintray
+//apply from: 'install.gradle'
+//apply from: 'bintray.gradle'
